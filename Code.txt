@@ -1,0 +1,48 @@
+# File paths
+input_file = "names.txt"       # Your file with full names, one per line
+output_file = "passwords.txt"  # File to save generated passwords
+
+# Numbers to append (optional)
+numbers = ["", "123", "2025", "007"]
+
+# Function to generate password combinations
+def generate_passwords_from_file(input_file, output_file):
+    passwords = set()
+    
+    # Read names from the file
+    with open(input_file, "r", encoding="utf-8") as f:
+        names = f.readlines()
+    
+    for full_name in names:
+        parts = full_name.strip().split()
+        if len(parts) < 2:
+            continue  # Skip names without at least 2 parts
+        first, last = parts[0], parts[1]
+
+        # Basic combinations
+        combos = [
+            f"{first}{last}",
+            f"{last}{first}",
+            f"{first[0]}{last}",  # first initial + last
+            f"{first}{last[0]}"   # first + last initial
+        ]
+
+        # Variations with capitalization
+        combos += [c.lower() for c in combos]
+        combos += [c.upper() for c in combos]
+        combos += [c.capitalize() for c in combos]
+
+        # Add numbers
+        for combo in combos:
+            for num in numbers:
+                passwords.add(combo + num)
+
+    # Write all passwords to output file
+    with open(output_file, "w", encoding="utf-8") as f:
+        for pwd in sorted(passwords):
+            f.write(pwd + "\n")
+
+    print(f"[+] Generated {len(passwords)} passwords and saved to {output_file}")
+
+# Run the function
+generate_passwords_from_file(input_file, output_file)
